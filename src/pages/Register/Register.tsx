@@ -11,12 +11,14 @@ export default function Register() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors }
   } = useForm<FormData>()
   const onSubmit = handleSubmit((data) => {
-    console.log(data)
+    //console.log(data)
   })
-  console.log(errors)
+  //console.log(errors)
+
   return (
     <div className='bg-orange'>
       <div className='mx-auto max-w-7xl px-4'>
@@ -38,6 +40,7 @@ export default function Register() {
                   type='password'
                   className='w-full rounded-sm border border-gray-300 p-3 outline-none focus:border-gray-500 focus:shadow-sm'
                   placeholder='Password'
+                  autoComplete='on'
                   {...register('password', rules.password)}
                 />
                 <div className='mt-1 min-h-[1.25rem] text-sm text-red-600'>{errors.password?.message}</div>
@@ -47,7 +50,11 @@ export default function Register() {
                   type='password'
                   className='w-full rounded-sm border border-gray-300 p-3 outline-none focus:border-gray-500 focus:shadow-sm'
                   placeholder='Confirm Password'
-                  {...register('confirm_password', rules.confirm_password)}
+                  autoComplete='on'
+                  {...register('confirm_password', {
+                    ...rules.confirm_password,
+                    validate: (value) => value === getValues('password') || 'Nhập không khớp password'
+                  })}
                 />
                 <div className='mt-1 min-h-[1.25rem] text-sm text-red-600'>{errors.confirm_password?.message}</div>
               </div>

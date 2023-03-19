@@ -37,7 +37,7 @@ export const rules: Rules = {
   confirm_password: {
     required: {
       value: true,
-      message: 'nhập lại password bắt buộc'
+      message: 'Nhập lại password bắt buộc'
     },
     maxLength: {
       value: 160,
