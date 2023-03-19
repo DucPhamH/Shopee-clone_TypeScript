@@ -15,7 +15,7 @@ export default function Register() {
     formState: { errors }
   } = useForm<FormData>()
   const onSubmit = handleSubmit((data) => {
-    //console.log(data)
+    console.log(data)
   })
   //console.log(errors)
 
