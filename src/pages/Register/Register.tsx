@@ -1,20 +1,20 @@
-import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import Input from 'src/components/Input'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { schema, Schema } from 'src/ultils/rules'
 import { useMutation } from '@tanstack/react-query'
 import { omit } from 'lodash'
+import { schema, Schema } from 'src/ultils/rules'
+import Input from 'src/components/Input'
 import { registerAccount } from 'src/apis/auth.api'
 import { isAxiosUnprocessableEntityError } from 'src/ultils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
 import { useContext } from 'react'
 import { AppContext } from 'src/context/app.context'
-import { toast } from 'react-toastify'
 import Button from 'src/components/Button'
 type FormData = Schema
+
 export default function Register() {
-  const { setIsAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
   const {
     register,
@@ -24,7 +24,6 @@ export default function Register() {
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
-
   const registerAccountMutation = useMutation({
     mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body)
   })
@@ -33,7 +32,7 @@ export default function Register() {
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
         setIsAuthenticated(true)
-        toast.success(data.data.message)
+        setProfile(data.data.data.user)
         navigate('/')
       },
       onError: (error) => {
@@ -63,10 +62,9 @@ export default function Register() {
       }
     })
   })
-
   return (
     <div className='bg-orange'>
-      <div className='container '>
+      <div className='container'>
         <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 lg:col-start-4'>
             <form className='rounded bg-white p-10 shadow-sm' onSubmit={onSubmit} noValidate>
@@ -88,7 +86,6 @@ export default function Register() {
                 placeholder='Password'
                 autoComplete='on'
               />
-
               <Input
                 name='confirm_password'
                 register={register}
@@ -98,7 +95,7 @@ export default function Register() {
                 placeholder='Confirm Password'
                 autoComplete='on'
               />
-              <div className='mt-3'>
+              <div className='mt-2'>
                 <Button
                   className='flex w-full items-center justify-center bg-red-500 py-4 px-2 text-sm uppercase text-white hover:bg-red-600'
                   isLoading={registerAccountMutation.isLoading}
